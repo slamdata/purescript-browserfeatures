@@ -16,6 +16,7 @@ data InputType
   | Number
   | Search
   | Range
+  | Text
 ```
 
 ##### Instances

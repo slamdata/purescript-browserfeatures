@@ -20,6 +20,7 @@ data InputType
   | Number
   | Search
   | Range
+  | Text
 
 allInputTypes :: Array InputType
 allInputTypes =
@@ -35,6 +36,7 @@ allInputTypes =
   , Number
   , Search
   , Range
+  , Text
   ]
 
 instance showInputType :: Show InputType where
@@ -50,6 +52,7 @@ instance showInputType :: Show InputType where
   show Number = "Number"
   show Search = "Search"
   show Range = "Range"
+  show Text = "Text"
 
 -- | Render an `InputType` into the corresponding value of the `type` attribute
 -- | on an `input` element.
@@ -66,6 +69,7 @@ renderInputType Url = "url"
 renderInputType Number = "number"
 renderInputType Search = "search"
 renderInputType Range = "range"
+renderInputType Text = "text"
 
 instance eqInputType :: Eq InputType where
   eq x y = renderInputType x == renderInputType y
