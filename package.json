@@ -1,0 +1,21 @@
+{
+  "name": "purescript-browserfeatures",
+  "description": "A PureScript interface to browserfeatures.js.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slamdata/purescript-browserfeatures.git"
+  },
+  "author": "Jon Sterling <jon@jonmsterling.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "npm install && gulp bundle-test"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-purescript": "^0.5.0",
+    "purescript": "^0.7.1",
+    "webpack-stream": "^2.1.0"
+  },
+  "dependencies": {
+  }
+}
