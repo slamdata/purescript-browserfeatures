@@ -9,7 +9,7 @@ import Control.Monad.Eff.Exception
 import qualified Data.Array as Arr
 import qualified Data.List as L
 import qualified Data.Map as M
-import Data.Maybe (maybe)
+import Data.Maybe (fromMaybe)
 import Data.Foldable (foldr)
 import Data.Traversable (traverse)
 import Data.Tuple
@@ -33,6 +33,6 @@ detectInputTypeSupportMap = M.fromList <$> traverse (\t -> Tuple t <$> detectInp
 detectBrowserFeatures :: forall e. Eff (dom :: DOM | e) BrowserFeatures
 detectBrowserFeatures = do
   inputTypeSupportMap <- detectInputTypeSupportMap
-  pure { inputTypeSupported : maybe false id <<< flip M.lookup inputTypeSupportMap
+  pure { inputTypeSupported : fromMaybe false <<< flip M.lookup inputTypeSupportMap
        }
 
