@@ -10,15 +10,18 @@
   ],
   "description": "A data type for browser features and detectors to test for the features",
   "keywords": [
-    "purescript",
-    "platform"
+    "purescript"
   ],
   "license": "Apache-2.0",
   "dependencies": {
     "purescript-base": "^0.1.0",
-    "purescript-exceptions": "v0.3.0",
-    "purescript-prelude": "<= 0.1.1",
+    "purescript-exceptions": "^0.3.0",
+    "purescript-prelude": "^0.1.2",
     "purescript-dom": "^0.1.2",
-    "purescript-maps": "^0.4.0"
+    "purescript-maps": "^0.4.0",
+    "purescript-strings": "^0.7.0"
+  },
+  "resolutions": {
+    "purescript-strings": "^0.7.0"
   }
 }
