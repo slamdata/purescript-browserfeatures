@@ -1,7 +1,13 @@
 // module DOM.BrowserFeatures.Detectors
 
+var _inputTypeSupportMemoTable = {};
+
 exports._detectInputTypeSupport = function(type) {
   return function() {
+    if (_inputTypeSupportMemoTable.hasOwnProperty(type)) {
+      return _inputTypeSupportMemoTable[type];
+    }
+
     var el = document.createElement("input");
 
     try {
@@ -10,6 +16,9 @@ exports._detectInputTypeSupport = function(type) {
       return false;
     }
 
-    return el.type === type;
+    var result = el.type === type;
+    _inputTypeSupportMemoTable[type] = result;
+
+    return result;
   };
 };
