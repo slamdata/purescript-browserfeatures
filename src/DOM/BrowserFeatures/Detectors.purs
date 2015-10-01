@@ -4,26 +4,63 @@ module DOM.BrowserFeatures.Detectors
 
 import Prelude
 import Control.Monad.Eff
+import Control.Monad.Eff.Class (liftEff)
+import qualified Control.Monad.Eff.Unsafe as Unsafe
 import Control.Monad.Eff.Exception
+import Control.Monad.Eff.Ref
 
 import qualified Data.Array as Arr
 import qualified Data.List as L
 import qualified Data.Map as M
-import Data.Maybe (fromMaybe)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Foldable (foldr)
+import qualified Data.Nullable as Nullable
 import Data.Traversable (traverse)
 import Data.Tuple
 
 import DOM
+import qualified DOM.HTML as DOM
+import qualified DOM.HTML.Types as DOM
+import qualified DOM.Node.Types as DOM
+import qualified DOM.HTML.Window as Win
+import qualified DOM.Node.Document as Doc
+import qualified DOM.Node.Element as Elem
 import Data.BrowserFeatures
 import qualified Data.BrowserFeatures.InputType as IT
 
-foreign import _detectInputTypeSupport :: forall e. String -> Eff (dom :: DOM | e) Boolean
+foreign import _getTypeProperty :: forall e. DOM.Element -> Eff (dom :: DOM | e) String
+
+type InputTypeMap = M.Map IT.InputType Boolean
+
+-- | This is safe, because memoization is a monotonic & universally benign
+-- | effect.
+memoizeEff :: forall i e o. (Ord i) => (i -> Eff e o) -> i -> Eff e o
+memoizeEff f =
+  runPure <<< Unsafe.unsafeInterleaveEff $ do
+    cacheRef <- newRef M.empty
+    pure \i -> Unsafe.unsafeInterleaveEff $ do
+      cache <- readRef cacheRef
+      case M.lookup i cache of
+        Just o -> pure o
+        Nothing -> do
+          o <- Unsafe.unsafeInterleaveEff $ f i
+          modifyRef cacheRef (M.insert i o)
+          pure o
 
 detectInputTypeSupport :: forall e. IT.InputType -> Eff (dom :: DOM | e) Boolean
-detectInputTypeSupport = _detectInputTypeSupport <<< IT.renderInputType
+detectInputTypeSupport =
+  memoizeEff \it -> do
+    window <- DOM.window
+    document <- DOM.htmlDocumentToDocument <$> Win.document window
+    element <- Doc.createElement "input" document
 
-detectInputTypeSupportMap :: forall e. Eff (dom :: DOM | e) (M.Map IT.InputType Boolean)
+    let ty = IT.renderInputType it
+    catchException (\_ -> pure false) $ do
+      Elem.setAttribute "type" ty element
+      ty' <- _getTypeProperty element
+      pure $ ty == ty'
+
+detectInputTypeSupportMap :: forall e. Eff (dom :: DOM | e) InputTypeMap
 detectInputTypeSupportMap = M.fromList <$> traverse (\t -> Tuple t <$> detectInputTypeSupport t) inputTypes
   where
     inputTypes :: L.List IT.InputType
