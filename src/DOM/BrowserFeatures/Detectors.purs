@@ -18,7 +18,7 @@ import qualified Data.Nullable as Nullable
 import Data.Traversable (traverse)
 import Data.Tuple
 
-import DOM
+import qualified DOM as DOM
 import qualified DOM.HTML as DOM
 import qualified DOM.HTML.Types as DOM
 import qualified DOM.Node.Types as DOM
@@ -28,7 +28,7 @@ import qualified DOM.Node.Element as Elem
 import Data.BrowserFeatures
 import qualified Data.BrowserFeatures.InputType as IT
 
-foreign import _getTypeProperty :: forall e. DOM.Element -> Eff (dom :: DOM | e) String
+foreign import _getTypeProperty :: forall e. DOM.Element -> Eff (dom :: DOM.DOM | e) String
 
 type InputTypeMap = M.Map IT.InputType Boolean
 
@@ -47,7 +47,7 @@ memoizeEff f =
           modifyRef cacheRef (M.insert i o)
           pure o
 
-detectInputTypeSupport :: forall e. IT.InputType -> Eff (dom :: DOM | e) Boolean
+detectInputTypeSupport :: forall e. IT.InputType -> Eff (dom :: DOM.DOM | e) Boolean
 detectInputTypeSupport =
   memoizeEff \it -> do
     window <- DOM.window
@@ -60,14 +60,14 @@ detectInputTypeSupport =
       ty' <- _getTypeProperty element
       pure $ ty == ty'
 
-detectInputTypeSupportMap :: forall e. Eff (dom :: DOM | e) InputTypeMap
+detectInputTypeSupportMap :: forall e. Eff (dom :: DOM.DOM | e) InputTypeMap
 detectInputTypeSupportMap = M.fromList <$> traverse (\t -> Tuple t <$> detectInputTypeSupport t) inputTypes
   where
     inputTypes :: L.List IT.InputType
     inputTypes = foldr L.Cons L.Nil IT.allInputTypes
 
 -- | Detect browser features by testing them using the DOM.
-detectBrowserFeatures :: forall e. Eff (dom :: DOM | e) BrowserFeatures
+detectBrowserFeatures :: forall e. Eff (dom :: DOM.DOM | e) BrowserFeatures
 detectBrowserFeatures = do
   inputTypeSupportMap <- detectInputTypeSupportMap
   pure { inputTypeSupported : fromMaybe false <<< flip M.lookup inputTypeSupportMap
