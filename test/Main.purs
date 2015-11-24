@@ -4,7 +4,7 @@ import Prelude
 import Control.Monad.Eff (Eff())
 import Control.Monad.Eff.Console (CONSOLE(), log)
 
-import Data.Traversable (traverse, for)
+import Data.Traversable (for)
 import qualified Data.BrowserFeatures.InputType as IT
 import DOM
 import DOM.BrowserFeatures.Detectors

@@ -4,17 +4,14 @@ module DOM.BrowserFeatures.Detectors
 
 import Prelude
 import Control.Monad.Eff
-import Control.Monad.Eff.Class (liftEff)
 import qualified Control.Monad.Eff.Unsafe as Unsafe
 import Control.Monad.Eff.Exception
 import Control.Monad.Eff.Ref
 
-import qualified Data.Array as Arr
 import qualified Data.List as L
 import qualified Data.Map as M
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Foldable (foldr)
-import qualified Data.Nullable as Nullable
 import Data.Traversable (traverse)
 import Data.Tuple
 

@@ -5,7 +5,6 @@ module Data.BrowserFeatures.InputType
   ) where
 
 import Prelude
-import qualified Data.Array as Arr
 
 data InputType
   = Color
