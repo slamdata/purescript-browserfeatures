@@ -21,9 +21,9 @@ data InputType
 
 ##### Instances
 ``` purescript
-instance showInputType :: Show InputType
-instance eqInputType :: Eq InputType
-instance ordInputType :: Ord InputType
+Show InputType
+Eq InputType
+Ord InputType
 ```
 
 #### `allInputTypes`
