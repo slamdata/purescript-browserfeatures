@@ -4,7 +4,7 @@ module Data.BrowserFeatures.InputType
   , allInputTypes
   ) where
 
-import Prelude
+import Prelude (class Ord, class Eq, class Show, compare, (==))
 
 data InputType
   = Color
@@ -75,4 +75,3 @@ instance eqInputType :: Eq InputType where
 
 instance ordInputType :: Ord InputType where
   compare x y = compare (renderInputType x) (renderInputType y)
-
