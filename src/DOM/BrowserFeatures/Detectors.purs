@@ -2,28 +2,28 @@ module DOM.BrowserFeatures.Detectors
   ( detectBrowserFeatures
   ) where
 
-import Prelude
-import Control.Monad.Eff
-import qualified Control.Monad.Eff.Unsafe as Unsafe
-import Control.Monad.Eff.Exception
-import Control.Monad.Eff.Ref
+import Prelude (class Ord, flip, (<<<), pure, bind, (<$>), (==), ($))
+import Control.Monad.Eff (Eff, runPure)
+import Control.Monad.Eff.Unsafe as Unsafe
+import Control.Monad.Eff.Exception (catchException)
+import Control.Monad.Eff.Ref (modifyRef, readRef, newRef)
 
-import qualified Data.List as L
-import qualified Data.Map as M
+import Data.List as L
+import Data.Map as M
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Foldable (foldr)
 import Data.Traversable (traverse)
-import Data.Tuple
+import Data.Tuple (Tuple(Tuple))
 
-import qualified DOM as DOM
-import qualified DOM.HTML as DOM
-import qualified DOM.HTML.Types as DOM
-import qualified DOM.Node.Types as DOM
-import qualified DOM.HTML.Window as Win
-import qualified DOM.Node.Document as Doc
-import qualified DOM.Node.Element as Elem
-import Data.BrowserFeatures
-import qualified Data.BrowserFeatures.InputType as IT
+import DOM (DOM) as DOM
+import DOM.HTML (window) as DOM
+import DOM.HTML.Types (htmlDocumentToDocument) as DOM
+import DOM.Node.Types (Element) as DOM
+import DOM.HTML.Window as Win
+import DOM.Node.Document as Doc
+import DOM.Node.Element as Elem
+import Data.BrowserFeatures (BrowserFeatures)
+import Data.BrowserFeatures.InputType as IT
 
 foreign import _getTypeProperty :: forall e. DOM.Element -> Eff (dom :: DOM.DOM | e) String
 
@@ -47,8 +47,8 @@ memoizeEff f =
 detectInputTypeSupport :: forall e. IT.InputType -> Eff (dom :: DOM.DOM | e) Boolean
 detectInputTypeSupport =
   memoizeEff \it -> do
-    window <- DOM.window
-    document <- DOM.htmlDocumentToDocument <$> Win.document window
+    window' <- DOM.window
+    document <- DOM.htmlDocumentToDocument <$> Win.document window'
     element <- Doc.createElement "input" document
 
     let ty = IT.renderInputType it
@@ -69,4 +69,3 @@ detectBrowserFeatures = do
   inputTypeSupportMap <- detectInputTypeSupportMap
   pure { inputTypeSupported : fromMaybe false <<< flip M.lookup inputTypeSupportMap
        }
-

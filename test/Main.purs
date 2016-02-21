@@ -1,13 +1,13 @@
 module Test.Main where
 
-import Prelude
+import Prelude (Unit, bind, show, (++), ($), void)
 import Control.Monad.Eff (Eff())
 import Control.Monad.Eff.Console (CONSOLE(), log)
 
 import Data.Traversable (for)
-import qualified Data.BrowserFeatures.InputType as IT
-import DOM
-import DOM.BrowserFeatures.Detectors
+import Data.BrowserFeatures.InputType as IT
+import DOM (DOM)
+import DOM.BrowserFeatures.Detectors (detectBrowserFeatures)
 
 main :: Eff (dom :: DOM, console :: CONSOLE) Unit
 main = do
