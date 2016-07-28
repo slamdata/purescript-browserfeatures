@@ -38,6 +38,9 @@ allInputTypes =
   , Text
   ]
 
+derive instance eqInputType :: Eq InputType
+derive instance ordInputType :: Ord InputType
+
 instance showInputType :: Show InputType where
   show Color = "Color"
   show Date = "Date"
@@ -69,10 +72,3 @@ renderInputType Number = "number"
 renderInputType Search = "search"
 renderInputType Range = "range"
 renderInputType Text = "text"
-
-instance eqInputType :: Eq InputType where
-  eq x y = renderInputType x == renderInputType y
-
-instance ordInputType :: Ord InputType where
-  compare x y = compare (renderInputType x) (renderInputType y)
-

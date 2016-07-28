@@ -1,13 +1,15 @@
 module Test.Main where
 
 import Prelude
-import Control.Monad.Eff (Eff())
-import Control.Monad.Eff.Console (CONSOLE(), log)
 
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+
+import Data.BrowserFeatures.InputType as IT
 import Data.Traversable (for)
-import qualified Data.BrowserFeatures.InputType as IT
-import DOM
-import DOM.BrowserFeatures.Detectors
+
+import DOM (DOM)
+import DOM.BrowserFeatures.Detectors (detectBrowserFeatures)
 
 main :: Eff (dom :: DOM, console :: CONSOLE) Unit
 main = do
@@ -20,4 +22,4 @@ main = do
     queryFeatureSupport = do
       features <- detectBrowserFeatures
       void $ for IT.allInputTypes \ty ->
-        log $ show ty ++ if features.inputTypeSupported ty then " supported" else " not supported"
+        log $ show ty <> if features.inputTypeSupported ty then " supported" else " not supported"
