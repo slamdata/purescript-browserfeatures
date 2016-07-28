@@ -1,4 +1,4 @@
-// module DOM.BrowserFeatures.Detectors
+"use strict";
 
 exports._getTypeProperty = function (el) {
   return function () {
