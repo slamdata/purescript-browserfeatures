@@ -14,9 +14,9 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "purescript-dom": "^1.2.0",
+    "purescript-dom": "^2.0.0",
     "purescript-exceptions": "^1.0.0",
-    "purescript-maps": "^1.0.0",
+    "purescript-maps": "^1.1.0",
     "purescript-prelude": "^1.0.1",
     "purescript-refs": "^1.0.0"
   },
