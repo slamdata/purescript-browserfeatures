@@ -34,14 +34,14 @@ type InputTypeMap = M.Map IT.InputType Boolean
 -- | effect.
 memoizeEff :: forall i e o. (Ord i) => (i -> Eff e o) -> i -> Eff e o
 memoizeEff f =
-  runPure <<< Unsafe.unsafeInterleaveEff $ do
+  runPure <<< Unsafe.unsafeCoerceEff $ do
     cacheRef <- newRef M.empty
-    pure \i -> Unsafe.unsafeInterleaveEff $ do
+    pure \i -> Unsafe.unsafeCoerceEff $ do
       cache <- readRef cacheRef
       case M.lookup i cache of
         Just o -> pure o
         Nothing -> do
-          o <- Unsafe.unsafeInterleaveEff $ f i
+          o <- Unsafe.unsafeCoerceEff $ f i
           modifyRef cacheRef (M.insert i o)
           pure o
 
@@ -59,7 +59,7 @@ detectInputTypeSupport =
       pure $ ty == ty'
 
 detectInputTypeSupportMap :: forall e. Eff (dom :: DOM | e) InputTypeMap
-detectInputTypeSupportMap = M.fromList <$> traverse (\t -> Tuple t <$> detectInputTypeSupport t) inputTypes
+detectInputTypeSupportMap = M.fromFoldable <$> traverse (\t -> Tuple t <$> detectInputTypeSupport t) inputTypes
   where
     inputTypes :: L.List IT.InputType
     inputTypes = foldr L.Cons L.Nil IT.allInputTypes
