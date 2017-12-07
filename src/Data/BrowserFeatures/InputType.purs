@@ -9,7 +9,6 @@ import Prelude
 data InputType
   = Color
   | Date
-  | DateTime
   | DateTimeLocal
   | Time
   | Month
@@ -25,7 +24,6 @@ allInputTypes :: Array InputType
 allInputTypes =
   [ Color
   , Date
-  , DateTime
   , DateTimeLocal
   , Time
   , Month
@@ -44,7 +42,6 @@ derive instance ordInputType :: Ord InputType
 instance showInputType :: Show InputType where
   show Color = "Color"
   show Date = "Date"
-  show DateTime = "DateTime"
   show DateTimeLocal = "DateTimeLocal"
   show Time = "Time"
   show Month = "Month"
@@ -61,7 +58,6 @@ instance showInputType :: Show InputType where
 renderInputType :: InputType -> String
 renderInputType Color = "color"
 renderInputType Date = "date"
-renderInputType DateTime = "datetime"
 renderInputType DateTimeLocal = "datetime-local"
 renderInputType Time = "time"
 renderInputType Month = "month"
