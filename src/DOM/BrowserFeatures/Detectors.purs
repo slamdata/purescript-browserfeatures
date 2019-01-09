@@ -32,7 +32,7 @@ type InputTypeMap = M.Map IT.InputType Boolean
 -- | effect.
 memoizeEff :: forall i o. (Ord i) => (i -> Effect o) -> i -> Effect o
 memoizeEff f =
-  ?runPure <<< Unsafe.unsafePerformEffect $ do
+  Unsafe.unsafePerformEffect $ do
     cacheRef <- ?newRef M.empty
     pure \i -> Unsafe.unsafePerformEffect $ do
       cache <- ?readRef cacheRef
