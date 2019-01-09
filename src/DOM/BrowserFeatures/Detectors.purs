@@ -18,30 +18,36 @@ import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
 
+import Web.HTML (window) as DOM
+import Web.DOM.Internal.Types (Element) as DOM
+import Web.HTML.Window as Win
+import Web.DOM.Element as Elem
+import Web.DOM.Document as Doc
+
 foreign import _getTypeProperty :: DOM.Element -> Effect String
 
 type InputTypeMap = M.Map IT.InputType Boolean
 
 -- | This is safe, because memoization is a monotonic & universally benign
 -- | effect.
-memoizeEff :: forall i e o. (Ord i) => (i -> Eff e o) -> i -> Eff e o
+memoizeEff :: forall i o. (Ord i) => (i -> Effect o) -> i -> Effect o
 memoizeEff f =
   ?runPure <<< Unsafe.unsafePerformEffect $ do
-    cacheRef <- newRef M.empty
+    cacheRef <- ?newRef M.empty
     pure \i -> Unsafe.unsafePerformEffect $ do
-      cache <- readRef cacheRef
+      cache <- ?readRef cacheRef
       case M.lookup i cache of
         Just o -> pure o
         Nothing -> do
           o <- Unsafe.unsafePerformEffect $ f i
-          modifyRef cacheRef (M.insert i o)
+          ?modifyRef cacheRef (M.insert i o)
           pure o
 
 detectInputTypeSupport :: IT.InputType -> Effect Boolean
 detectInputTypeSupport =
   memoizeEff \it -> do
     window <- DOM.window
-    document <- DOM.htmlDocumentToDocument <$> Win.document window
+    document <- ?hole <$> Win.document window
     element <- Doc.createElement "input" document
 
     let ty = IT.renderInputType it
