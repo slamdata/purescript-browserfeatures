@@ -8,6 +8,7 @@ import Effect (Effect)
 import Effect.Exception (catchException)
 -- import Control.Monad.Eff.Ref (modifyRef, readRef, newRef)
 import Effect.Unsafe as Unsafe
+import Effect.Ref (new, read, modify_)
 
 import Data.BrowserFeatures (BrowserFeatures)
 import Data.BrowserFeatures.InputType as IT
@@ -33,14 +34,14 @@ type InputTypeMap = M.Map IT.InputType Boolean
 memoizeEff :: forall i o. (Ord i) => (i -> Effect o) -> i -> Effect o
 memoizeEff f =
   Unsafe.unsafePerformEffect $ do
-    cacheRef <- ?newRef M.empty
+    cacheRef <- new M.empty
     pure \i -> Unsafe.unsafePerformEffect $ do
-      cache <- ?readRef cacheRef
+      cache <- read cacheRef
       case M.lookup i cache of
         Just o -> pure o
         Nothing -> do
-          o <- Unsafe.unsafePerformEffect $ f i
-          ?modifyRef cacheRef (M.insert i o)
+          o <- f i
+          modify_ (M.insert i o) cacheRef 
           pure o
 
 detectInputTypeSupport :: IT.InputType -> Effect Boolean
