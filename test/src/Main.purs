@@ -2,16 +2,15 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Effect (Effect)
+import Effect.Console (log)
 
 import Data.BrowserFeatures.InputType as IT
 import Data.Traversable (for)
 
-import DOM (DOM)
 import DOM.BrowserFeatures.Detectors (detectBrowserFeatures)
 
-main :: Eff (dom :: DOM, console :: CONSOLE) Unit
+main :: Effect Unit
 main = do
   queryFeatureSupport
   log "Will query feature support again, using memoized results"
