@@ -6,9 +6,8 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Exception (catchException)
--- import Control.Monad.Eff.Ref (modifyRef, readRef, newRef)
 import Effect.Unsafe as Unsafe
-import Effect.Ref (new, read, modify_)
+import Effect.Ref (new, read, modify_, Ref)
 
 import Data.BrowserFeatures (BrowserFeatures)
 import Data.BrowserFeatures.InputType as IT
@@ -22,6 +21,7 @@ import Data.Tuple (Tuple(..))
 import Web.HTML (window) as DOM
 import Web.DOM.Internal.Types (Element) as DOM
 import Web.HTML.Window as Win
+import Web.HTML.HTMLDocument as HDoc
 import Web.DOM.Element as Elem
 import Web.DOM.Document as Doc
 
@@ -32,10 +32,10 @@ type InputTypeMap = M.Map IT.InputType Boolean
 -- | This is safe, because memoization is a monotonic & universally benign
 -- | effect.
 memoizeEff :: forall i o. (Ord i) => (i -> Effect o) -> i -> Effect o
-memoizeEff f =
-  Unsafe.unsafePerformEffect $ do
-    cacheRef <- new M.empty
-    pure \i -> Unsafe.unsafePerformEffect $ do
+memoizeEff f = findOrUpdate $ Unsafe.unsafePerformEffect $ new M.empty
+  where
+    findOrUpdate :: Ref (M.Map i o) -> i -> Effect o
+    findOrUpdate cacheRef i = do
       cache <- read cacheRef
       case M.lookup i cache of
         Just o -> pure o
@@ -48,7 +48,7 @@ detectInputTypeSupport :: IT.InputType -> Effect Boolean
 detectInputTypeSupport =
   memoizeEff \it -> do
     window <- DOM.window
-    document <- ?hole <$> Win.document window
+    document <- HDoc.toDocument <$> Win.document window
     element <- Doc.createElement "input" document
 
     let ty = IT.renderInputType it
