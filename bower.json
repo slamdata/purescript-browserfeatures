@@ -14,13 +14,12 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "purescript-dom": "^4.0.0",
-    "purescript-exceptions": "^3.0.0",
-    "purescript-maps": "^3.0.0",
-    "purescript-prelude": "^3.0.0",
-    "purescript-refs": "^3.0.0"
+    "purescript-exceptions": "^4.0.0",
+    "purescript-ordered-collections": "^1.4.0",
+    "purescript-prelude": "^4.0.0",
+    "purescript-refs": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-console": "^3.0.0"
+    "purescript-console": "^4.0.0"
   }
 }
